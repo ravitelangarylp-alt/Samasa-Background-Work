@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanskrit Samasa Data Entry Tool</title>
+
+  <style>
+    :root {
+      --primary: #7C2D12;
+      --primary-dark: #5f210e;
+      --background: #FAF7F2;
+      --card: #ffffff;
+      --success: #15803D;
+      --accent: #D97706;
+      --border: #e5ddd3;
+      --text: #292524;
+      --muted: #78716c;
+      --danger: #b91c1c;
+      --shadow: 0 4px 18px rgba(68, 44, 25, 0.08);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans", sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1100px, 94%);
+      margin: 0 auto;
+      padding: 25px 0 50px;
+    }
+
+    /* =========================
+       HEADER
+    ========================== */
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      margin: 0;
+      color: var(--primary);
+      font-size: clamp(1.6rem, 4vw, 2.3rem);
+    }
+
+    header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================== */
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 25px;
+      background: #eee7df;
+      padding: 5px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .tab-button {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    .tab-button:hover {
+      background: rgba(124, 45, 18, 0.08);
+    }
+
+    .tab-button.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 6px rgba(124, 45, 18, 0.2);
+    }
+
+    /* =========================
+       TAB SECTIONS
+    ========================== */
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* =========================
+       CARDS
+    ========================== */
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      margin: 0 0 20px;
+      color: var(--primary);
+      font-size: 1.2rem;
+      border-bottom: 2px solid #f0e6dc;
+      padding-bottom: 10px;
+    }
+
+    /* =========================
+       FORM
+    ========================== */
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 7px;
+      color: #44403c;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #d6cec5;
+      border-radius: 7px;
+      padding: 11px 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #fffdfa;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+
+    /* =========================
+       EXAMPLE BOX
+    ========================== */
+
+    .example-box {
+      border: 1px solid #ddd3c8;
+      background: #fcfaf7;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .example-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .example-number {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.95rem;
+    }
+
+    .remove-example {
+      border: none;
+      background: transparent;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .remove-example:hover {
+      text-decoration: underline;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================== */
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 7px;
+      padding: 11px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-add {
+      background: #fff7ed;
+      color: var(--accent);
+      border: 1px solid #f2c38b;
+    }
+
+    .btn-add:hover {
+      background: #ffedd5;
+    }
+
+    .btn-save {
+      background: var(--primary);
+      color: white;
+      padding: 13px 25px;
+    }
+
+    .btn-save:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-save:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* =========================
+       STATUS MESSAGE
+    ========================== */
+
+    .status-message {
+      display: none;
+      padding: 12px 15px;
+      border-radius: 7px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .status-message.success {
+      display: block;
+      background: #dcfce7;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-message.error {
+      display: block;
+      background: #fee2e2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .status-message.info {
+      display: block;
+      background: #fff7ed;
+      color: var(--accent);
+      border: 1px solid #fed7aa;
+    }
+
+    /* =========================
+       VIEW DATA
+    ========================== */
+
+    .table-container {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #eee7df;
+      vertical-align: top;
+      font-size: 0.88rem;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fdfaf6;
+    }
+
+    tbody tr:hover {
+      background: #fff7ed;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: var(--muted);
+    }
+
+    .empty-data {
+      text-align: center;
+      padding: 35px;
+      color: var(--muted);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 700px) {
+      .container {
+        width: 92%;
+        padding-top: 18px;
+      }
+
+      .card {
+        padding: 17px;
+      }
+
+      .form-grid,
+      .example-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full-width {
+        grid-column: auto;
+      }
+
+      .tabs {
+        width: 100%;
+      }
+
+      .tab-button {
+        padding: 11px 8px;
+        font-size: 0.85rem;
+      }
+
+      .example-box {
+        padding: 15px;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+      <h1>Sanskrit Samasa Data Entry Tool</h1>
+      <p>Structured database for Sanskrit Samāsa rules and examples</p>
+    </header>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <div class="tabs">
+      <button
+        class="tab-button active"
+        id="addTab"
+        onclick="switchTab('add')">
+        ✍️ Add Data
+      </button>
+
+      <button
+        class="tab-button"
+        id="viewTab"
+        onclick="switchTab('view')">
+        📊 View Data
+      </button>
+    </div>
+
+
+    <!-- =========================
+         STATUS MESSAGE
+    ========================== -->
+
+    <div id="statusMessage" class="status-message"></div>
+
+
+    <!-- =========================
+         TAB 1: ADD DATA
+    ========================== -->
+
+    <section id="addSection" class="tab-content active">
+
+      <!-- Sutra Details -->
+
+      <div class="card">
+
+        <h2 class="card-title">📜 Sutra Details</h2>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="ruleId">Rule ID *</label>
+            <input
+              type="text"
+              id="ruleId"
+              placeholder="Example: 2.1.1">
+          </div>
+
+          <div class="form-group">
+            <label for="sutra">Sutra *</label>
+            <input
+              type="text"
+              id="sutra"
+              placeholder="Enter Sanskrit Sutra">
+          </div>
+
+          <div class="form-group">
+            <label for="samasaType">Samasa Type</label>
+            <input
+              type="text"
+              id="samasaType"
+              placeholder="Example: Dvitīyā Tatpuruṣa">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="sanskritDesc">Sanskrit Description</label>
+            <textarea
+              id="sanskritDesc"
+              placeholder="Enter Sanskrit explanation..."></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="englishDesc">English Description</label>
+            <textarea
+              id="englishDesc"
+              placeholder="Enter English explanation..."></textarea>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Examples -->
+
+      <div class="card">
+
+        <h2 class="card-title">📝 Examples</h2>
+
+        <div id="examplesContainer">
+
+          <!-- Default Example -->
+
+          <div class="example-box">
+
+            <div class="example-header">
+              <span class="example-number">Example 1</span>
+            </div>
+
+            <div class="example-grid">
+
+              <div class="form-group">
+                <label>Samastapada (Compound Word)</label>
+                <input
+                  type="text"
+                  class="samastapada"
+                  placeholder="Example: राजपुरुषः">
+              </div>
+
+              <div class="form-group">
+                <label>Purvapada (First Word)</label>
+                <input
+                  type="text"
+                  class="purvapada"
+                  placeholder="Example: राजन्">
+              </div>
+
+              <div class="form-group">
+                <label>Uttarapada (Second Word)</label>
+                <input
+                  type="text"
+                  class="uttarapada"
+                  placeholder="Example: पुरुष">
+              </div>
+
+              <div class="form-group">
+                <label>Pratipadika (Base Stem)</label>
+                <input
+                  type="text"
+                  class="pratipadika"
+                  placeholder="Enter base stem">
+              </div>
+
+              <div class="form-group">
+                <label>Vishesha / Condition</label>
+                <input
+                  type="text"
+                  class="vishesha"
+                  placeholder="Special rule or condition">
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="button-row">
+          <button
+            type="button"
+            class="btn btn-add"
+            onclick="addExample()">
+            + Add Another Example
+          </button>
+        </div>
+
+      </div>
+
+
+      <!-- Save -->
+
+      <div class="button-row">
+        <button
+          type="button"
+          id="saveButton"
+          class="btn btn-save"
+          onclick="saveData()">
+          💾 Save Data
+        </button>
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         TAB 2: VIEW DATA
+    ========================== -->
+
+    <section id="viewSection" class="tab-content">
+
+      <div class="card">
+
+        <h2 class="card-title">📊 Samasa Database</h2>
+
+        <div id="tableContainer" class="table-container">
+
+          <div class="empty-data">
+            Click "View Data" to load the database.
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <script>
+
+    /* =========================================================
+       GOOGLE APPS SCRIPT URL
+       Replace this with your deployed Google Apps Script URL.
+    ========================================================== */
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm-_jBZOPdlAAPZGOPRyV_2cmk3kz7EJdrZqVYhu8znVKFXiS7pSnXxeO3hz6wW4io/exec";
+
+
+    /* =========================================================
+       TAB SWITCHING
+    ========================================================== */
+
+    function switchTab(tab) {
+
+      const addSection = document.getElementById("addSection");
+      const viewSection = document.getElementById("viewSection");
+
+      const addTab = document.getElementById("addTab");
+      const viewTab = document.getElementById("viewTab");
+
+      clearStatus();
+
+      if (tab === "add") {
+
+        addSection.classList.add("active");
+        viewSection.classList.remove("active");
+
+        addTab.classList.add("active");
+        viewTab.classList.remove("active");
+
+      } else {
+
+        addSection.classList.remove("active");
+        viewSection.classList.add("active");
+
+        addTab.classList.remove("active");
+        viewTab.classList.add("active");
+
+        loadData();
+      }
+    }
+
+
+    /* =========================================================
+       ADD ANOTHER EXAMPLE
+    ========================================================== */
+
+    function addExample() {
+
+      const container =
+        document.getElementById("examplesContainer");
+
+      const exampleCount =
+        container.querySelectorAll(".example-box").length + 1;
+
+      const exampleBox =
+        document.createElement("div");
+
+      exampleBox.className = "example-box";
+
+      exampleBox.innerHTML = `
+
+        <div class="example-header">
+
+          <span class="example-number">
+            Example ${exampleCount}
+          </span>
+
+          <button
+            type="button"
+            class="remove-example"
+            onclick="removeExample(this)">
+            ✕ Remove
+          </button>
+
+        </div>
+
+        <div class="example-grid">
+
+          <div class="form-group">
+            <label>Samastapada (Compound Word)</label>
+            <input
+              type="text"
+              class="samastapada"
+              placeholder="Compound word">
+          </div>
+
+          <div class="form-group">
+            <label>Purvapada (First Word)</label>
+            <input
+              type="text"
+              class="purvapada"
+              placeholder="First word">
+          </div>
+
+          <div class="form-group">
+            <label>Uttarapada (Second Word)</label>
+            <input
+              type="text"
+              class="uttarapada"
+              placeholder="Second word">
+          </div>
+
+          <div class="form-group">
+            <label>Pratipadika (Base Stem)</label>
+            <input
+              type="text"
+              class="pratipadika"
+              placeholder="Base stem">
+          </div>
+
+          <div class="form-group">
+            <label>Vishesha / Condition</label>
+            <input
+              type="text"
+              class="vishesha"
+              placeholder="Special rule or condition">
+          </div>
+
+        </div>
+      `;
+
+      container.appendChild(exampleBox);
+
+      renumberExamples();
+    }
+
+
+    /* =========================================================
+       REMOVE EXAMPLE
+    ========================================================== */
+
+    function removeExample(button) {
+
+      const exampleBox =
+        button.closest(".example-box");
+
+      if (exampleBox) {
+        exampleBox.remove();
+      }
+
+      /*
+       * Always maintain at least one Example Box.
+       */
+      const remaining =
+        document.querySelectorAll(".example-box").length;
+
+      if (remaining === 0) {
+        createDefaultExample();
+      }
+
+      renumberExamples();
+    }
+
+
+    /* =========================================================
+       RENUMBER EXAMPLES
+    ========================================================== */
+
+    function renumberExamples() {
+
+      const boxes =
+        document.querySelectorAll(".example-box");
+
+      boxes.forEach((box, index) => {
+
+        const number =
+          box.querySelector(".example-number");
+
+        if (number) {
+          number.textContent =
+            `Example ${index + 1}`;
+        }
+
+      });
+    }
+
+
+    /* =========================================================
+       CREATE DEFAULT EXAMPLE
+    ========================================================== */
+
+    function createDefaultExample() {
+
+      const container =
+        document.getElementById("examplesContainer");
+
+      const exampleBox =
+        document.createElement("div");
+
+      exampleBox.className = "example-box";
+
+      exampleBox.innerHTML = `
+
+        <div class="example-header">
+
+          <span class="example-number">
+            Example 1
+          </span>
+
+        </div>
+
+        <div class="example-grid">
+
+          <div class="form-group">
+            <label>Samastapada (Compound Word)</label>
+            <input
+              type="text"
+              class="samastapada"
+              placeholder="Compound word">
+          </div>
+
+          <div class="form-group">
+            <label>Purvapada (First Word)</label>
+            <input
+              type="text"
+              class="purvapada"
+              placeholder="First word">
+          </div>
+
+          <div class="form-group">
+            <label>Uttarapada (Second Word)</label>
+            <input
+              type="text"
+              class="uttarapada"
+              placeholder="Second word">
+          </div>
+
+          <div class="form-group">
+            <label>Pratipadika (Base Stem)</label>
+            <input
+              type="text"
+              class="pratipadika"
+              placeholder="Base stem">
+          </div>
+
+          <div class="form-group">
+            <label>Vishesha / Condition</label>
+            <input
+              type="text"
+              class="vishesha"
+              placeholder="Special rule or condition">
+          </div>
+
+        </div>
+      `;
+
+      container.appendChild(exampleBox);
+    }
+
+
+    /* =========================================================
+       SAVE DATA
+    ========================================================== */
+
+    async function saveData() {
+
+      const ruleId =
+        document.getElementById("ruleId").value.trim();
+
+      const sutra =
+        document.getElementById("sutra").value.trim();
+
+      const samasaType =
+        document.getElementById("samasaType").value.trim();
+
+      const sanskritDesc =
+        document.getElementById("sanskritDesc").value.trim();
+
+      const englishDesc =
+        document.getElementById("englishDesc").value.trim();
+
+
+      /* -------------------------
+         VALIDATION
+      ------------------------- */
+
+      if (!ruleId) {
+
+        showStatus(
+          "Please enter the Rule ID.",
+          "error"
+        );
+
+        document.getElementById("ruleId").focus();
+
+        return;
+      }
+
+
+      if (!sutra) {
+
+        showStatus(
+          "Please enter the Sutra.",
+          "error"
+        );
+
+        document.getElementById("sutra").focus();
+
+        return;
+      }
+
+
+      /* -------------------------
+         COLLECT EXAMPLES
+      ------------------------- */
+
+      const exampleBoxes =
+        document.querySelectorAll(".example-box");
+
+      const payload = [];
+
+
+      exampleBoxes.forEach(box => {
+
+        const samastapada =
+          box.querySelector(".samastapada").value.trim();
+
+        const purvapada =
+          box.querySelector(".purvapada").value.trim();
+
+        const uttarapada =
+          box.querySelector(".uttarapada").value.trim();
+
+        const pratipadika =
+          box.querySelector(".pratipadika").value.trim();
+
+        const vishesha =
+          box.querySelector(".vishesha").value.trim();
+
+
+        /*
+         * Only add the Example Box if at least
+         * one field contains data.
+         */
+
+        if (
+          samastapada ||
+          purvapada ||
+          uttarapada ||
+          pratipadika ||
+          vishesha
+        ) {
+
+          const row = [
+
+            ruleId,
+            sutra,
+            samasaType,
+            sanskritDesc,
+            englishDesc,
+            samastapada,
+            purvapada,
+            uttarapada,
+            pratipadika,
+            vishesha
+
+          ];
+
+          payload.push(row);
+        }
+
+      });
+
+
+      /* -------------------------
+         CHECK EXAMPLES
+      ------------------------- */
+
+      if (payload.length === 0) {
+
+        showStatus(
+          "Please enter at least one example before saving.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      /* -------------------------
+         PREPARE BUTTON
+      ------------------------- */
+
+      const saveButton =
+        document.getElementById("saveButton");
+
+      saveButton.disabled = true;
+
+      saveButton.textContent =
+        "⏳ Saving...";
+
+
+      showStatus(
+        "Saving data...",
+        "info"
+      );
+
+
+      /* -------------------------
+         SEND TO GOOGLE SCRIPT
+      ------------------------- */
+
+      try {
+
+        await fetch(SCRIPT_URL, {
+
+          method: "POST",
+
+          mode: "no-cors",
+
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+
+          body: JSON.stringify(payload)
+
+        });
+
+
+        /*
+         * no-cors responses are opaque, so the browser
+         * cannot read the actual server response.
+         *
+         * If fetch completes without throwing an error,
+         * we treat the request as successfully sent.
+         */
+
+        showStatus(
+          `✓ ${payload.length} example(s) sent successfully.`,
+          "success"
+        );
+
+
+        /* -------------------------
+           CLEAR ONLY EXAMPLES
+        ------------------------- */
+
+        clearExamples();
+
+
+      } catch (error) {
+
+        console.error("Save Error:", error);
+
+        showStatus(
+          "Unable to send the data. Please check your Google Apps Script URL and connection.",
+          "error"
+        );
+
+      } finally {
+
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+          "💾 Save Data";
+      }
+
+    }
+
+
+    /* =========================================================
+       CLEAR ONLY EXAMPLES
+    ========================================================== */
+
+    function clearExamples() {
+
+      const container =
+        document.getElementById("examplesContainer");
+
+      container.innerHTML = "";
+
+      createDefaultExample();
+
+    }
+
+
+    /* =========================================================
+       LOAD DATA
+    ========================================================== */
+
+    async function loadData() {
+
+      const tableContainer =
+        document.getElementById("tableContainer");
+
+      tableContainer.innerHTML = `
+        <div class="loading">
+          ⏳ Loading database...
+        </div>
+      `;
+
+
+      try {
+
+        const response =
+          await fetch(SCRIPT_URL);
+
+
+        if (!response.ok) {
+          throw new Error(
+            `HTTP Error: ${response.status}`
+          );
+        }
+
+
+        const data =
+          await response.json();
+
+
+        buildTable(data);
+
+
+      } catch (error) {
+
+        console.error("Load Error:", error);
+
+        tableContainer.innerHTML = `
+          <div class="empty-data">
+            ❌ Unable to load data.<br>
+            Please check the Google Apps Script URL
+            and deployment settings.
+          </div>
+        `;
+      }
+    }
+
+
+    /* =========================================================
+       BUILD DATA TABLE
+    ========================================================== */
+
+    function buildTable(data) {
+
+      const tableContainer =
+        document.getElementById("tableContainer");
+
+
+      if (!Array.isArray(data) || data.length === 0) {
+
+        tableContainer.innerHTML = `
+          <div class="empty-data">
+            No data found in the database.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      /*
+       * Expected column names.
+       */
+
+      const headers = [
+
+        "Rule ID",
+        "Sutra",
+        "Samasa Type",
+        "Sanskrit Description",
+        "English Description",
+        "Samastapada",
+        "Purvapada",
+        "Uttarapada",
+        "Pratipadika",
+        "Vishesha / Condition"
+
+      ];
+
+
+      /*
+       * Skip the first row if it appears to be
+       * a header row.
+       */
+
+      let rows = data;
+
+      if (isHeaderRow(data[0])) {
+        rows = data.slice(1);
+      }
+
+
+      if (rows.length === 0) {
+
+        tableContainer.innerHTML = `
+          <div class="empty-data">
+            The database contains headers but no records.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      /* -------------------------
+         CREATE TABLE
+      ------------------------- */
+
+      const table =
+        document.createElement("table");
+
+
+      /* Table Header */
+
+      const thead =
+        document.createElement("thead");
+
+      const headerRow =
+        document.createElement("tr");
+
+
+      headers.forEach(header => {
+
+        const th =
+          document.createElement("th");
+
+        th.textContent = header;
+
+        headerRow.appendChild(th);
+
+      });
+
+
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+
+      /* Table Body */
+
+      const tbody =
+        document.createElement("tbody");
+
+
+      rows.forEach(row => {
+
+        const tr =
+          document.createElement("tr");
+
+
+        for (let i = 0; i < headers.length; i++) {
+
+          const td =
+            document.createElement("td");
+
+          /*
+           * textContent is used rather than innerHTML
+           * to safely display database content.
+           */
+
+          td.textContent =
+            row[i] !== undefined && row[i] !== null
+              ? row[i]
+              : "";
+
+          tr.appendChild(td);
+
+        }
+
+
+        tbody.appendChild(tr);
+
+      });
+
+
+      table.appendChild(tbody);
+
+      tableContainer.innerHTML = "";
+
+      tableContainer.appendChild(table);
+
+    }
+
+
+    /* =========================================================
+       DETECT HEADER ROW
+    ========================================================== */
+
+    function isHeaderRow(row) {
+
+      if (!Array.isArray(row)) {
+        return false;
+      }
+
+
+      const firstCell =
+        String(row[0] || "")
+          .trim()
+          .toLowerCase();
+
+
+      const secondCell =
+        String(row[1] || "")
+          .trim()
+          .toLowerCase();
+
+
+      return (
+        firstCell === "rule id" ||
+        firstCell === "rule_id" ||
+        firstCell === "ruleid" ||
+        secondCell === "sutra"
+      );
+    }
+
+
+    /* =========================================================
+       STATUS MESSAGE
+    ========================================================== */
+
+    function showStatus(message, type) {
+
+      const status =
+        document.getElementById("statusMessage");
+
+      status.textContent = message;
+
+      status.className =
+        `status-message ${type}`;
+
+    }
+
+
+    function clearStatus() {
+
+      const status =
+        document.getElementById("statusMessage");
+
+      status.textContent = "";
+
+      status.className =
+        "status-message";
+
+    }
+
+  </script>
+
+</body>
+</html>
