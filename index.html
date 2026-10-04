@@ -3,118 +3,203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sanskrit Samasa Data Entry Tool</title>
+
+  <title>Sanskrit Samasa Multi-Category Data Entry Tool</title>
 
   <style>
+    /* =========================================================
+       GLOBAL VARIABLES
+    ========================================================= */
+
     :root {
       --primary: #7C2D12;
-      --primary-dark: #5f210e;
+      --primary-dark: #5C210E;
       --background: #FAF7F2;
-      --card: #ffffff;
-      --success: #15803D;
+      --card: #FFFFFF;
       --accent: #D97706;
-      --border: #e5ddd3;
+      --success: #15803D;
+      --danger: #B91C1C;
       --text: #292524;
-      --muted: #78716c;
-      --danger: #b91c1c;
-      --shadow: 0 4px 18px rgba(68, 44, 25, 0.08);
+      --muted: #78716C;
+      --border: #E7DED4;
+      --soft-bg: #FCF9F5;
+      --input-bg: #FFFEFC;
+
       --radius: 12px;
+      --shadow: 0 4px 18px rgba(80, 45, 20, 0.08);
     }
+
+
+    /* =========================================================
+       RESET
+    ========================================================= */
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, "Noto Sans", sans-serif;
+      padding: 0;
       background: var(--background);
       color: var(--text);
+      font-family:
+        Arial,
+        "Noto Sans",
+        sans-serif;
       line-height: 1.5;
     }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+
+    /* =========================================================
+       MAIN CONTAINER
+    ========================================================= */
 
     .container {
       width: min(1100px, 94%);
       margin: 0 auto;
-      padding: 25px 0 50px;
+      padding: 28px 0 60px;
     }
 
-    /* =========================
-       HEADER
-    ========================== */
 
-    header {
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .header {
       text-align: center;
       margin-bottom: 25px;
     }
 
-    header h1 {
+    .header h1 {
       margin: 0;
       color: var(--primary);
-      font-size: clamp(1.6rem, 4vw, 2.3rem);
+      font-size: clamp(1.6rem, 4vw, 2.25rem);
+      font-weight: 700;
     }
 
-    header p {
-      margin: 6px 0 0;
+    .header p {
+      margin: 7px 0 0;
       color: var(--muted);
       font-size: 0.95rem;
     }
 
-    /* =========================
-       NAVIGATION
-    ========================== */
 
-    .tabs {
+    /* =========================================================
+       CATEGORY SELECTOR
+    ========================================================= */
+
+    .category-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .category-title {
+      margin: 0 0 13px;
+      color: var(--primary);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .category-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .category-option {
+      position: relative;
+    }
+
+    .category-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .category-label {
       display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 25px;
-      background: #eee7df;
-      padding: 5px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .tab-button {
-      flex: 1;
-      border: none;
-      background: transparent;
+      min-height: 52px;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--soft-bg);
       color: var(--text);
-      padding: 12px 18px;
-      border-radius: 7px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-align: center;
       cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: 600;
-      transition: 0.2s ease;
+      transition: all 0.2s ease;
     }
 
-    .tab-button:hover {
-      background: rgba(124, 45, 18, 0.08);
+    .category-label:hover {
+      border-color: var(--accent);
+      background: #FFF7ED;
     }
 
-    .tab-button.active {
+    .category-option input:checked + .category-label {
       background: var(--primary);
+      border-color: var(--primary);
       color: white;
-      box-shadow: 0 2px 6px rgba(124, 45, 18, 0.2);
+      box-shadow: 0 3px 8px rgba(124, 45, 18, 0.18);
     }
 
-    /* =========================
-       TAB SECTIONS
-    ========================== */
 
-    .tab-content {
+    /* =========================================================
+       STATUS MESSAGE
+    ========================================================= */
+
+    .status {
       display: none;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
     }
 
-    .tab-content.active {
+    .status.show {
       display: block;
     }
 
-    /* =========================
-       CARDS
-    ========================== */
+    .status.success {
+      color: var(--success);
+      background: #DCFCE7;
+      border: 1px solid #BBF7D0;
+    }
+
+    .status.error {
+      color: var(--danger);
+      background: #FEE2E2;
+      border: 1px solid #FECACA;
+    }
+
+    .status.info {
+      color: var(--accent);
+      background: #FFF7ED;
+      border: 1px solid #FED7AA;
+    }
+
+
+    /* =========================================================
+       CARD
+    ========================================================= */
 
     .card {
       background: var(--card);
@@ -125,22 +210,44 @@
       box-shadow: var(--shadow);
     }
 
-    .card-title {
-      margin: 0 0 20px;
-      color: var(--primary);
-      font-size: 1.2rem;
-      border-bottom: 2px solid #f0e6dc;
-      padding-bottom: 10px;
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 11px;
+      border-bottom: 2px solid #F0E7DD;
     }
 
-    /* =========================
-       FORM
-    ========================== */
+    .card-title {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: #FFF7ED;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       FORM GRID
+    ========================================================= */
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
     }
 
     .form-group {
@@ -153,24 +260,29 @@
     }
 
     label {
-      font-size: 0.88rem;
-      font-weight: 700;
       margin-bottom: 7px;
-      color: #44403c;
+      color: #44403C;
+      font-size: 0.87rem;
+      font-weight: 700;
+    }
+
+    .required {
+      color: var(--danger);
     }
 
     input,
     textarea {
       width: 100%;
-      border: 1px solid #d6cec5;
-      border-radius: 7px;
       padding: 11px 12px;
-      font-family: inherit;
-      font-size: 0.95rem;
+      border: 1px solid #D6CEC5;
+      border-radius: 7px;
+      background: var(--input-bg);
       color: var(--text);
-      background: #fffdfa;
+      font-size: 0.94rem;
       outline: none;
-      transition: border 0.2s, box-shadow 0.2s;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
     input:focus,
@@ -184,39 +296,60 @@
       resize: vertical;
     }
 
-    /* =========================
-       EXAMPLE BOX
-    ========================== */
+    input::placeholder,
+    textarea::placeholder {
+      color: #A8A29E;
+    }
+
+
+    /* =========================================================
+       CATEGORY PARENT FORMS
+    ========================================================= */
+
+    .parent-form {
+      display: none;
+    }
+
+    .parent-form.active {
+      display: block;
+    }
+
+
+    /* =========================================================
+       EXAMPLE SECTION
+    ========================================================= */
 
     .example-box {
-      border: 1px solid #ddd3c8;
-      background: #fcfaf7;
-      border-radius: 10px;
+      position: relative;
       padding: 20px;
       margin-bottom: 15px;
-      position: relative;
+      border: 1px solid #DDD3C8;
+      border-radius: 10px;
+      background: var(--soft-bg);
     }
 
     .example-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 17px;
     }
 
     .example-number {
-      font-weight: 700;
       color: var(--primary);
       font-size: 0.95rem;
+      font-weight: 700;
     }
 
     .remove-example {
       border: none;
       background: transparent;
       color: var(--danger);
+      font-size: 0.82rem;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
+      padding: 4px 6px;
     }
 
     .remove-example:hover {
@@ -225,160 +358,90 @@
 
     .example-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 15px;
     }
 
-    /* =========================
+
+    /* =========================================================
        BUTTONS
-    ========================== */
+    ========================================================= */
 
     .button-row {
       display: flex;
+      align-items: center;
       gap: 12px;
       flex-wrap: wrap;
       margin-top: 15px;
-    }
-
-    button {
-      font-family: inherit;
     }
 
     .btn {
       border: none;
       border-radius: 7px;
       padding: 11px 18px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     .btn-add {
-      background: #fff7ed;
+      background: #FFF7ED;
+      border: 1px solid #F2C38B;
       color: var(--accent);
-      border: 1px solid #f2c38b;
     }
 
     .btn-add:hover {
-      background: #ffedd5;
+      background: #FFEDD5;
     }
 
     .btn-save {
       background: var(--primary);
       color: white;
       padding: 13px 25px;
+      box-shadow: 0 3px 8px rgba(124, 45, 18, 0.16);
     }
 
     .btn-save:hover {
       background: var(--primary-dark);
+      transform: translateY(-1px);
     }
 
     .btn-save:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+      transform: none;
     }
 
-    /* =========================
-       STATUS MESSAGE
-    ========================== */
 
-    .status-message {
-      display: none;
-      padding: 12px 15px;
-      border-radius: 7px;
-      margin-bottom: 20px;
-      font-size: 0.92rem;
-      font-weight: 600;
+    /* =========================================================
+       CATEGORY INFORMATION
+    ========================================================= */
+
+    .category-note {
+      margin-top: 16px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--accent);
+      background: #FFFBEB;
+      color: #57534E;
+      font-size: 0.82rem;
+      border-radius: 4px;
     }
 
-    .status-message.success {
-      display: block;
-      background: #dcfce7;
-      color: var(--success);
-      border: 1px solid #bbf7d0;
-    }
 
-    .status-message.error {
-      display: block;
-      background: #fee2e2;
-      color: var(--danger);
-      border: 1px solid #fecaca;
-    }
-
-    .status-message.info {
-      display: block;
-      background: #fff7ed;
-      color: var(--accent);
-      border: 1px solid #fed7aa;
-    }
-
-    /* =========================
-       VIEW DATA
-    ========================== */
-
-    .table-container {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1000px;
-    }
-
-    th {
-      background: var(--primary);
-      color: white;
-      padding: 12px;
-      text-align: left;
-      font-size: 0.85rem;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 11px 12px;
-      border-bottom: 1px solid #eee7df;
-      vertical-align: top;
-      font-size: 0.88rem;
-    }
-
-    tbody tr:nth-child(even) {
-      background: #fdfaf6;
-    }
-
-    tbody tr:hover {
-      background: #fff7ed;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 30px;
-      color: var(--muted);
-    }
-
-    .empty-data {
-      text-align: center;
-      padding: 35px;
-      color: var(--muted);
-    }
-
-    /* =========================
+    /* =========================================================
        RESPONSIVE
-    ========================== */
+    ========================================================= */
 
-    @media (max-width: 700px) {
+    @media (max-width: 750px) {
+
       .container {
         width: 92%;
-        padding-top: 18px;
+        padding-top: 20px;
       }
 
-      .card {
-        padding: 17px;
+      .category-options {
+        grid-template-columns: 1fr;
       }
 
       .form-grid,
@@ -390,182 +453,676 @@
         grid-column: auto;
       }
 
-      .tabs {
-        width: 100%;
+      .card {
+        padding: 17px;
       }
 
-      .tab-button {
-        padding: 11px 8px;
-        font-size: 0.85rem;
+      .card-header {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .example-box {
         padding: 15px;
       }
 
-      header h1 {
-        font-size: 1.5rem;
+    }
+
+    @media (max-width: 450px) {
+
+      .header h1 {
+        font-size: 1.45rem;
       }
+
+      .header p {
+        font-size: 0.85rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
     }
   </style>
 </head>
+
 
 <body>
 
   <div class="container">
 
-    <!-- =========================
+    <!-- =======================================================
          HEADER
-    ========================== -->
+    ======================================================== -->
 
-    <header>
-      <h1>Sanskrit Samasa Data Entry Tool</h1>
-      <p>Structured database for Sanskrit Samāsa rules and examples</p>
+    <header class="header">
+
+      <h1>Sanskrit Samasa Multi-Category Data Entry Tool</h1>
+
+      <p>
+        Structured data entry system for Sanskrit Samāsa research
+      </p>
+
     </header>
 
 
-    <!-- =========================
-         NAVIGATION
-    ========================== -->
+    <!-- =======================================================
+         CATEGORY SELECTION
+    ======================================================== -->
 
-    <div class="tabs">
-      <button
-        class="tab-button active"
-        id="addTab"
-        onclick="switchTab('add')">
-        ✍️ Add Data
-      </button>
+    <section class="category-card">
 
-      <button
-        class="tab-button"
-        id="viewTab"
-        onclick="switchTab('view')">
-        📊 View Data
-      </button>
+      <h2 class="category-title">
+        Select Data Category
+      </h2>
+
+      <div class="category-options">
+
+        <!-- Category 1 -->
+
+        <div class="category-option">
+
+          <input
+            type="radio"
+            id="categoryVidhayaka"
+            name="dataCategory"
+            value="Samasa Vidhayaka"
+            checked
+            onchange="changeCategory()">
+
+          <label
+            for="categoryVidhayaka"
+            class="category-label">
+
+            1. Samasa Vidhayaka
+
+          </label>
+
+        </div>
+
+
+        <!-- Category 2 -->
+
+        <div class="category-option">
+
+          <input
+            type="radio"
+            id="categorySamasanta"
+            name="dataCategory"
+            value="Samasanta Pratyaya"
+            onchange="changeCategory()">
+
+          <label
+            for="categorySamasanta"
+            class="category-label">
+
+            2. Samasanta Pratyaya
+
+          </label>
+
+        </div>
+
+
+        <!-- Category 3 -->
+
+        <div class="category-option">
+
+          <input
+            type="radio"
+            id="categoryAluk"
+            name="dataCategory"
+            value="Aluk Samasa"
+            onchange="changeCategory()">
+
+          <label
+            for="categoryAluk"
+            class="category-label">
+
+            3. Aluk Samasa
+
+          </label>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         STATUS
+    ======================================================== -->
+
+    <div
+      id="statusMessage"
+      class="status">
     </div>
 
 
-    <!-- =========================
-         STATUS MESSAGE
-    ========================== -->
+    <!-- =======================================================
+         CATEGORY 1
+         SAMASA VIDHAYAKA
+    ======================================================== -->
 
-    <div id="statusMessage" class="status-message"></div>
-
-
-    <!-- =========================
-         TAB 1: ADD DATA
-    ========================== -->
-
-    <section id="addSection" class="tab-content active">
-
-      <!-- Sutra Details -->
+    <section
+      id="vidhayakaForm"
+      class="parent-form active">
 
       <div class="card">
 
-        <h2 class="card-title">📜 Sutra Details</h2>
+        <div class="card-header">
+
+          <h2 class="card-title">
+            📜 Sutra Details
+          </h2>
+
+          <span class="category-badge">
+            Samasa Vidhayaka
+          </span>
+
+        </div>
+
 
         <div class="form-grid">
 
+          <!-- Rule ID -->
+
           <div class="form-group">
-            <label for="ruleId">Rule ID *</label>
+
+            <label for="vidhayakaRuleId">
+              Rule ID <span class="required">*</span>
+            </label>
+
             <input
               type="text"
-              id="ruleId"
+              id="vidhayakaRuleId"
               placeholder="Example: 2.1.1">
+
           </div>
 
+
+          <!-- Sutra -->
+
           <div class="form-group">
-            <label for="sutra">Sutra *</label>
+
+            <label for="vidhayakaSutra">
+              Sutra <span class="required">*</span>
+            </label>
+
             <input
               type="text"
-              id="sutra"
+              id="vidhayakaSutra"
               placeholder="Enter Sanskrit Sutra">
+
           </div>
+
+
+          <!-- Samasa Type -->
 
           <div class="form-group">
-            <label for="samasaType">Samasa Type</label>
+
+            <label for="vidhayakaSamasaType">
+              Samasa Type
+            </label>
+
             <input
               type="text"
-              id="samasaType"
+              id="vidhayakaSamasaType"
               placeholder="Example: Dvitīyā Tatpuruṣa">
+
           </div>
 
+
+          <!-- Sanskrit Description -->
+
           <div class="form-group full-width">
-            <label for="sanskritDesc">Sanskrit Description</label>
+
+            <label for="vidhayakaSanskritDesc">
+              Sanskrit Description
+            </label>
+
             <textarea
-              id="sanskritDesc"
+              id="vidhayakaSanskritDesc"
               placeholder="Enter Sanskrit explanation..."></textarea>
+
           </div>
 
+
+          <!-- English Description -->
+
           <div class="form-group full-width">
-            <label for="englishDesc">English Description</label>
+
+            <label for="vidhayakaEnglishDesc">
+              English Description
+            </label>
+
             <textarea
-              id="englishDesc"
+              id="vidhayakaEnglishDesc"
               placeholder="Enter English explanation..."></textarea>
+
           </div>
 
         </div>
 
       </div>
 
+    </section>
 
-      <!-- Examples -->
+
+    <!-- =======================================================
+         CATEGORY 2
+         SAMASANTA PRATYAYA
+    ======================================================== -->
+
+    <section
+      id="samasantaForm"
+      class="parent-form">
 
       <div class="card">
 
-        <h2 class="card-title">📝 Examples</h2>
+        <div class="card-header">
 
-        <div id="examplesContainer">
+          <h2 class="card-title">
+            📜 Sutra Details
+          </h2>
 
-          <!-- Default Example -->
+          <span class="category-badge">
+            Samasanta Pratyaya
+          </span>
 
-          <div class="example-box">
+        </div>
 
-            <div class="example-header">
-              <span class="example-number">Example 1</span>
+
+        <div class="form-grid">
+
+          <!-- Rule ID -->
+
+          <div class="form-group">
+
+            <label for="samasantaRuleId">
+              Rule ID <span class="required">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="samasantaRuleId"
+              placeholder="Example: 5.4.1">
+
+          </div>
+
+
+          <!-- Sutra -->
+
+          <div class="form-group">
+
+            <label for="samasantaSutra">
+              Sutra <span class="required">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="samasantaSutra"
+              placeholder="Enter Sanskrit Sutra">
+
+          </div>
+
+
+          <!-- Suffix -->
+
+          <div class="form-group">
+
+            <label for="samasantaSuffix">
+              Suffix (Pratyaya)
+            </label>
+
+            <input
+              type="text"
+              id="samasantaSuffix"
+              placeholder="Example: अच्">
+
+          </div>
+
+
+          <!-- Condition -->
+
+          <div class="form-group">
+
+            <label for="samasantaCondition">
+              Condition (Nimitta)
+            </label>
+
+            <input
+              type="text"
+              id="samasantaCondition"
+              placeholder="Enter the condition / nimitta">
+
+          </div>
+
+
+          <!-- Final Form Change -->
+
+          <div class="form-group full-width">
+
+            <label for="samasantaRupa">
+              Final Form Change (Rupa Parivartan)
+            </label>
+
+            <textarea
+              id="samasantaRupa"
+              placeholder="Describe the final form change..."></textarea>
+
+          </div>
+
+
+          <!-- Sanskrit Description -->
+
+          <div class="form-group full-width">
+
+            <label for="samasantaSanskritDesc">
+              Sanskrit Description
+            </label>
+
+            <textarea
+              id="samasantaSanskritDesc"
+              placeholder="Enter Sanskrit explanation..."></textarea>
+
+          </div>
+
+
+          <!-- English Description -->
+
+          <div class="form-group full-width">
+
+            <label for="samasantaEnglishDesc">
+              English Description
+            </label>
+
+            <textarea
+              id="samasantaEnglishDesc"
+              placeholder="Enter English explanation..."></textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         CATEGORY 3
+         ALUK SAMASA
+    ======================================================== -->
+
+    <section
+      id="alukForm"
+      class="parent-form">
+
+      <div class="card">
+
+        <div class="card-header">
+
+          <h2 class="card-title">
+            📜 Sutra Details
+          </h2>
+
+          <span class="category-badge">
+            Aluk Samasa
+          </span>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- Rule ID -->
+
+          <div class="form-group">
+
+            <label for="alukRuleId">
+              Rule ID <span class="required">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="alukRuleId"
+              placeholder="Example: 3.2.1">
+
+          </div>
+
+
+          <!-- Sutra -->
+
+          <div class="form-group">
+
+            <label for="alukSutra">
+              Sutra <span class="required">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="alukSutra"
+              placeholder="Enter Sanskrit Sutra">
+
+          </div>
+
+
+          <!-- Samasa Type -->
+
+          <div class="form-group">
+
+            <label for="alukSamasaType">
+              Samasa Type
+            </label>
+
+            <input
+              type="text"
+              id="alukSamasaType"
+              placeholder="Example: Tatpuruṣa">
+
+          </div>
+
+
+          <!-- Retained Vibhakti -->
+
+          <div class="form-group">
+
+            <label for="alukVibhakti">
+              Retained Vibhakti
+            </label>
+
+            <input
+              type="text"
+              id="alukVibhakti"
+              placeholder="Example: Ṣaṣṭhī">
+
+          </div>
+
+
+          <!-- Following Word Condition -->
+
+          <div class="form-group">
+
+            <label for="alukParapada">
+              Following Word Condition (Parapada Niyam)
+            </label>
+
+            <input
+              type="text"
+              id="alukParapada"
+              placeholder="Enter following word condition">
+
+          </div>
+
+
+          <!-- Special Sandhi -->
+
+          <div class="form-group">
+
+            <label for="alukSandhi">
+              Special Sandhi
+            </label>
+
+            <input
+              type="text"
+              id="alukSandhi"
+              placeholder="Enter special Sandhi information">
+
+          </div>
+
+
+          <!-- Sanskrit Description -->
+
+          <div class="form-group full-width">
+
+            <label for="alukSanskritDesc">
+              Sanskrit Description
+            </label>
+
+            <textarea
+              id="alukSanskritDesc"
+              placeholder="Enter Sanskrit explanation..."></textarea>
+
+          </div>
+
+
+          <!-- English Description -->
+
+          <div class="form-group full-width">
+
+            <label for="alukEnglishDesc">
+              English Description
+            </label>
+
+            <textarea
+              id="alukEnglishDesc"
+              placeholder="Enter English explanation..."></textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         SHARED CHILD FORM
+         EXAMPLES
+    ======================================================== -->
+
+    <section class="card">
+
+      <div class="card-header">
+
+        <h2 class="card-title">
+          📝 Examples
+        </h2>
+
+        <span class="category-badge">
+          Shared Example Data
+        </span>
+
+      </div>
+
+
+      <div id="examplesContainer">
+
+        <!-- =================================================
+             DEFAULT EXAMPLE BOX
+        ================================================== -->
+
+        <div class="example-box">
+
+          <div class="example-header">
+
+            <span class="example-number">
+              Example 1
+            </span>
+
+          </div>
+
+
+          <div class="example-grid">
+
+            <!-- Samastapada -->
+
+            <div class="form-group">
+
+              <label>
+                Samastapada
+              </label>
+
+              <input
+                type="text"
+                class="samastapada"
+                placeholder="Compound word">
+
             </div>
 
-            <div class="example-grid">
 
-              <div class="form-group">
-                <label>Samastapada (Compound Word)</label>
-                <input
-                  type="text"
-                  class="samastapada"
-                  placeholder="Example: राजपुरुषः">
-              </div>
+            <!-- Purvapada -->
 
-              <div class="form-group">
-                <label>Purvapada (First Word)</label>
-                <input
-                  type="text"
-                  class="purvapada"
-                  placeholder="Example: राजन्">
-              </div>
+            <div class="form-group">
 
-              <div class="form-group">
-                <label>Uttarapada (Second Word)</label>
-                <input
-                  type="text"
-                  class="uttarapada"
-                  placeholder="Example: पुरुष">
-              </div>
+              <label>
+                Purvapada
+              </label>
 
-              <div class="form-group">
-                <label>Pratipadika (Base Stem)</label>
-                <input
-                  type="text"
-                  class="pratipadika"
-                  placeholder="Enter base stem">
-              </div>
+              <input
+                type="text"
+                class="purvapada"
+                placeholder="First word">
 
-              <div class="form-group">
-                <label>Vishesha / Condition</label>
-                <input
-                  type="text"
-                  class="vishesha"
-                  placeholder="Special rule or condition">
-              </div>
+            </div>
+
+
+            <!-- Uttarapada -->
+
+            <div class="form-group">
+
+              <label>
+                Uttarapada
+              </label>
+
+              <input
+                type="text"
+                class="uttarapada"
+                placeholder="Second word">
+
+            </div>
+
+
+            <!-- Pratipadika -->
+
+            <div class="form-group">
+
+              <label>
+                Pratipadika
+              </label>
+
+              <input
+                type="text"
+                class="pratipadika"
+                placeholder="Base stem">
+
+            </div>
+
+
+            <!-- Vishesha -->
+
+            <div class="form-group">
+
+              <label>
+                Vishesha / Condition
+              </label>
+
+              <input
+                type="text"
+                class="vishesha"
+                placeholder="Special rule / condition">
 
             </div>
 
@@ -573,101 +1130,337 @@
 
         </div>
 
-
-        <div class="button-row">
-          <button
-            type="button"
-            class="btn btn-add"
-            onclick="addExample()">
-            + Add Another Example
-          </button>
-        </div>
-
       </div>
 
 
-      <!-- Save -->
+      <!-- Add Example -->
 
       <div class="button-row">
+
         <button
           type="button"
-          id="saveButton"
-          class="btn btn-save"
-          onclick="saveData()">
-          💾 Save Data
+          class="btn btn-add"
+          onclick="addExample()">
+
+          + Add Another Example
+
         </button>
+
+      </div>
+
+
+      <div class="category-note">
+
+        💡 You can enter multiple examples for the same Sutra.
+        Each filled Example Box will be saved as a separate row
+        under the selected category.
+
       </div>
 
     </section>
 
 
-    <!-- =========================
-         TAB 2: VIEW DATA
-    ========================== -->
+    <!-- =======================================================
+         SAVE BUTTON
+    ======================================================== -->
 
-    <section id="viewSection" class="tab-content">
+    <div class="button-row">
 
-      <div class="card">
+      <button
+        type="button"
+        id="saveButton"
+        class="btn btn-save"
+        onclick="saveData()">
 
-        <h2 class="card-title">📊 Samasa Database</h2>
+        💾 Save Data
 
-        <div id="tableContainer" class="table-container">
+      </button>
 
-          <div class="empty-data">
-            Click "View Data" to load the database.
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
+    </div>
 
   </div>
 
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================== -->
 
   <script>
 
     /* =========================================================
        GOOGLE APPS SCRIPT URL
-       Replace this with your deployed Google Apps Script URL.
+
+       Replace this with your deployed Web App URL.
     ========================================================== */
 
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm-_jBZOPdlAAPZGOPRyV_2cmk3kz7EJdrZqVYhu8znVKFXiS7pSnXxeO3hz6wW4io/exec";
 
 
     /* =========================================================
-       TAB SWITCHING
+       CURRENT CATEGORY
     ========================================================== */
 
-    function switchTab(tab) {
+    let currentCategory = "Samasa Vidhayaka";
 
-      const addSection = document.getElementById("addSection");
-      const viewSection = document.getElementById("viewSection");
 
-      const addTab = document.getElementById("addTab");
-      const viewTab = document.getElementById("viewTab");
+    /* =========================================================
+       CATEGORY SWITCHING
+    ========================================================== */
+
+    function changeCategory() {
+
+      const selected =
+        document.querySelector(
+          'input[name="dataCategory"]:checked'
+        );
+
+      if (!selected) {
+        return;
+      }
+
+      currentCategory = selected.value;
+
+      /*
+       * Hide all parent forms.
+       */
+
+      document
+        .querySelectorAll(".parent-form")
+        .forEach(form => {
+
+          form.classList.remove("active");
+
+        });
+
+
+      /*
+       * Show the correct parent form.
+       */
+
+      if (currentCategory === "Samasa Vidhayaka") {
+
+        document
+          .getElementById("vidhayakaForm")
+          .classList.add("active");
+
+      }
+
+      else if (currentCategory === "Samasanta Pratyaya") {
+
+        document
+          .getElementById("samasantaForm")
+          .classList.add("active");
+
+      }
+
+      else if (currentCategory === "Aluk Samasa") {
+
+        document
+          .getElementById("alukForm")
+          .classList.add("active");
+
+      }
+
+
+      /*
+       * Clear any old status message.
+       */
 
       clearStatus();
+    }
 
-      if (tab === "add") {
 
-        addSection.classList.add("active");
-        viewSection.classList.remove("active");
+    /* =========================================================
+       GET ACTIVE PARENT DATA
+    ========================================================== */
 
-        addTab.classList.add("active");
-        viewTab.classList.remove("active");
+    function getParentData() {
 
-      } else {
+      /*
+       * Each category has its own fields.
+       *
+       * The returned object contains:
+       *
+       * 1. display data
+       * 2. flat row field order
+       */
 
-        addSection.classList.remove("active");
-        viewSection.classList.add("active");
+      if (currentCategory === "Samasa Vidhayaka") {
 
-        addTab.classList.remove("active");
-        viewTab.classList.add("active");
+        return {
 
-        loadData();
+          ruleId:
+            document
+              .getElementById("vidhayakaRuleId")
+              .value
+              .trim(),
+
+          sutra:
+            document
+              .getElementById("vidhayakaSutra")
+              .value
+              .trim(),
+
+          fields: [
+
+            document
+              .getElementById("vidhayakaRuleId")
+              .value
+              .trim(),
+
+            document
+              .getElementById("vidhayakaSutra")
+              .value
+              .trim(),
+
+            document
+              .getElementById("vidhayakaSamasaType")
+              .value
+              .trim(),
+
+            document
+              .getElementById("vidhayakaSanskritDesc")
+              .value
+              .trim(),
+
+            document
+              .getElementById("vidhayakaEnglishDesc")
+              .value
+              .trim()
+
+          ]
+
+        };
+
       }
+
+
+      if (currentCategory === "Samasanta Pratyaya") {
+
+        return {
+
+          ruleId:
+            document
+              .getElementById("samasantaRuleId")
+              .value
+              .trim(),
+
+          sutra:
+            document
+              .getElementById("samasantaSutra")
+              .value
+              .trim(),
+
+          fields: [
+
+            document
+              .getElementById("samasantaRuleId")
+              .value
+              .trim(),
+
+            document
+              .getElementById("samasantaSutra")
+              .value
+              .trim(),
+
+            document
+              .getElementById("samasantaSuffix")
+              .value
+              .trim(),
+
+            document
+              .getElementById("samasantaCondition")
+              .value
+              .trim(),
+
+            document
+              .getElementById("samasantaRupa")
+              .value
+              .trim(),
+
+            document
+              .getElementById("samasantaSanskritDesc")
+              .value
+              .trim(),
+
+            document
+              .getElementById("samasantaEnglishDesc")
+              .value
+              .trim()
+
+          ]
+
+        };
+
+      }
+
+
+      if (currentCategory === "Aluk Samasa") {
+
+        return {
+
+          ruleId:
+            document
+              .getElementById("alukRuleId")
+              .value
+              .trim(),
+
+          sutra:
+            document
+              .getElementById("alukSutra")
+              .value
+              .trim(),
+
+          fields: [
+
+            document
+              .getElementById("alukRuleId")
+              .value
+              .trim(),
+
+            document
+              .getElementById("alukSutra")
+              .value
+              .trim(),
+
+            document
+              .getElementById("alukSamasaType")
+              .value
+              .trim(),
+
+            document
+              .getElementById("alukVibhakti")
+              .value
+              .trim(),
+
+            document
+              .getElementById("alukParapada")
+              .value
+              .trim(),
+
+            document
+              .getElementById("alukSandhi")
+              .value
+              .trim(),
+
+            document
+              .getElementById("alukSanskritDesc")
+              .value
+              .trim(),
+
+            document
+              .getElementById("alukEnglishDesc")
+              .value
+              .trim()
+
+          ]
+
+        };
+
+      }
+
+
+      return null;
     }
 
 
@@ -680,79 +1473,127 @@
       const container =
         document.getElementById("examplesContainer");
 
-      const exampleCount =
+
+      const count =
         container.querySelectorAll(".example-box").length + 1;
+
 
       const exampleBox =
         document.createElement("div");
 
       exampleBox.className = "example-box";
 
+
       exampleBox.innerHTML = `
 
         <div class="example-header">
 
           <span class="example-number">
-            Example ${exampleCount}
+            Example ${count}
           </span>
 
           <button
             type="button"
             class="remove-example"
             onclick="removeExample(this)">
+
             ✕ Remove
+
           </button>
 
         </div>
 
+
         <div class="example-grid">
 
           <div class="form-group">
-            <label>Samastapada (Compound Word)</label>
+
+            <label>
+              Samastapada
+            </label>
+
             <input
               type="text"
               class="samastapada"
               placeholder="Compound word">
+
           </div>
 
+
           <div class="form-group">
-            <label>Purvapada (First Word)</label>
+
+            <label>
+              Purvapada
+            </label>
+
             <input
               type="text"
               class="purvapada"
               placeholder="First word">
+
           </div>
 
+
           <div class="form-group">
-            <label>Uttarapada (Second Word)</label>
+
+            <label>
+              Uttarapada
+            </label>
+
             <input
               type="text"
               class="uttarapada"
               placeholder="Second word">
+
           </div>
 
+
           <div class="form-group">
-            <label>Pratipadika (Base Stem)</label>
+
+            <label>
+              Pratipadika
+            </label>
+
             <input
               type="text"
               class="pratipadika"
               placeholder="Base stem">
+
           </div>
 
+
           <div class="form-group">
-            <label>Vishesha / Condition</label>
+
+            <label>
+              Vishesha / Condition
+            </label>
+
             <input
               type="text"
               class="vishesha"
-              placeholder="Special rule or condition">
+              placeholder="Special rule / condition">
+
           </div>
 
         </div>
       `;
 
+
       container.appendChild(exampleBox);
 
       renumberExamples();
+
+
+      /*
+       * Automatically move the user to the
+       * newly created example.
+       */
+
+      exampleBox.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
     }
 
 
@@ -762,22 +1603,30 @@
 
     function removeExample(button) {
 
-      const exampleBox =
+      const box =
         button.closest(".example-box");
 
-      if (exampleBox) {
-        exampleBox.remove();
+      if (box) {
+        box.remove();
       }
+
 
       /*
-       * Always maintain at least one Example Box.
+       * Never allow zero example boxes.
        */
+
       const remaining =
-        document.querySelectorAll(".example-box").length;
+        document.querySelectorAll(
+          ".example-box"
+        ).length;
+
 
       if (remaining === 0) {
+
         createDefaultExample();
+
       }
+
 
       renumberExamples();
     }
@@ -790,19 +1639,27 @@
     function renumberExamples() {
 
       const boxes =
-        document.querySelectorAll(".example-box");
+        document.querySelectorAll(
+          ".example-box"
+        );
+
 
       boxes.forEach((box, index) => {
 
         const number =
-          box.querySelector(".example-number");
+          box.querySelector(
+            ".example-number"
+          );
 
         if (number) {
+
           number.textContent =
             `Example ${index + 1}`;
+
         }
 
       });
+
     }
 
 
@@ -813,12 +1670,17 @@
     function createDefaultExample() {
 
       const container =
-        document.getElementById("examplesContainer");
+        document.getElementById(
+          "examplesContainer"
+        );
+
 
       const exampleBox =
         document.createElement("div");
 
-      exampleBox.className = "example-box";
+      exampleBox.className =
+        "example-box";
+
 
       exampleBox.innerHTML = `
 
@@ -830,52 +1692,143 @@
 
         </div>
 
+
         <div class="example-grid">
 
           <div class="form-group">
-            <label>Samastapada (Compound Word)</label>
+
+            <label>
+              Samastapada
+            </label>
+
             <input
               type="text"
               class="samastapada"
               placeholder="Compound word">
+
           </div>
 
+
           <div class="form-group">
-            <label>Purvapada (First Word)</label>
+
+            <label>
+              Purvapada
+            </label>
+
             <input
               type="text"
               class="purvapada"
               placeholder="First word">
+
           </div>
 
+
           <div class="form-group">
-            <label>Uttarapada (Second Word)</label>
+
+            <label>
+              Uttarapada
+            </label>
+
             <input
               type="text"
               class="uttarapada"
               placeholder="Second word">
+
           </div>
 
+
           <div class="form-group">
-            <label>Pratipadika (Base Stem)</label>
+
+            <label>
+              Pratipadika
+            </label>
+
             <input
               type="text"
               class="pratipadika"
               placeholder="Base stem">
+
           </div>
 
+
           <div class="form-group">
-            <label>Vishesha / Condition</label>
+
+            <label>
+              Vishesha / Condition
+            </label>
+
             <input
               type="text"
               class="vishesha"
-              placeholder="Special rule or condition">
+              placeholder="Special rule / condition">
+
           </div>
 
         </div>
       `;
 
+
       container.appendChild(exampleBox);
+    }
+
+
+    /* =========================================================
+       GET EXAMPLE DATA
+    ========================================================== */
+
+    function getExampleData(box) {
+
+      const samastapada =
+        box
+          .querySelector(".samastapada")
+          .value
+          .trim();
+
+      const purvapada =
+        box
+          .querySelector(".purvapada")
+          .value
+          .trim();
+
+      const uttarapada =
+        box
+          .querySelector(".uttarapada")
+          .value
+          .trim();
+
+      const pratipadika =
+        box
+          .querySelector(".pratipadika")
+          .value
+          .trim();
+
+      const vishesha =
+        box
+          .querySelector(".vishesha")
+          .value
+          .trim();
+
+
+      return {
+        hasData:
+          Boolean(
+            samastapada ||
+            purvapada ||
+            uttarapada ||
+            pratipadika ||
+            vishesha
+          ),
+
+        fields: [
+
+          samastapada,
+          purvapada,
+          uttarapada,
+          pratipadika,
+          vishesha
+
+        ]
+      };
     }
 
 
@@ -885,119 +1838,112 @@
 
     async function saveData() {
 
-      const ruleId =
-        document.getElementById("ruleId").value.trim();
+      /*
+       * Get Parent fields according to the
+       * currently selected category.
+       */
 
-      const sutra =
-        document.getElementById("sutra").value.trim();
-
-      const samasaType =
-        document.getElementById("samasaType").value.trim();
-
-      const sanskritDesc =
-        document.getElementById("sanskritDesc").value.trim();
-
-      const englishDesc =
-        document.getElementById("englishDesc").value.trim();
+      const parent =
+        getParentData();
 
 
-      /* -------------------------
-         VALIDATION
-      ------------------------- */
+      if (!parent) {
 
-      if (!ruleId) {
+        showStatus(
+          "Unable to identify the selected category.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      /* -------------------------------------------------------
+         VALIDATE RULE ID
+      -------------------------------------------------------- */
+
+      if (!parent.ruleId) {
 
         showStatus(
           "Please enter the Rule ID.",
           "error"
         );
 
-        document.getElementById("ruleId").focus();
+        focusActiveRuleId();
 
         return;
       }
 
 
-      if (!sutra) {
+      /* -------------------------------------------------------
+         VALIDATE SUTRA
+      -------------------------------------------------------- */
+
+      if (!parent.sutra) {
 
         showStatus(
           "Please enter the Sutra.",
           "error"
         );
 
-        document.getElementById("sutra").focus();
+        focusActiveSutra();
 
         return;
       }
 
 
-      /* -------------------------
-         COLLECT EXAMPLES
-      ------------------------- */
+      /* -------------------------------------------------------
+         COLLECT ALL EXAMPLES
+      -------------------------------------------------------- */
 
-      const exampleBoxes =
-        document.querySelectorAll(".example-box");
+      const boxes =
+        document.querySelectorAll(
+          ".example-box"
+        );
 
-      const payload = [];
+
+      const rows = [];
 
 
-      exampleBoxes.forEach(box => {
+      boxes.forEach(box => {
 
-        const samastapada =
-          box.querySelector(".samastapada").value.trim();
-
-        const purvapada =
-          box.querySelector(".purvapada").value.trim();
-
-        const uttarapada =
-          box.querySelector(".uttarapada").value.trim();
-
-        const pratipadika =
-          box.querySelector(".pratipadika").value.trim();
-
-        const vishesha =
-          box.querySelector(".vishesha").value.trim();
+        const example =
+          getExampleData(box);
 
 
         /*
-         * Only add the Example Box if at least
-         * one field contains data.
+         * Only save an Example Box if at least
+         * one of its five fields contains data.
          */
 
-        if (
-          samastapada ||
-          purvapada ||
-          uttarapada ||
-          pratipadika ||
-          vishesha
-        ) {
+        if (example.hasData) {
+
+          /*
+           * Parent fields + current Example fields
+           *
+           * This creates ONE flat row.
+           */
 
           const row = [
 
-            ruleId,
-            sutra,
-            samasaType,
-            sanskritDesc,
-            englishDesc,
-            samastapada,
-            purvapada,
-            uttarapada,
-            pratipadika,
-            vishesha
+            ...parent.fields,
+            ...example.fields
 
           ];
 
-          payload.push(row);
+
+          rows.push(row);
+
         }
 
       });
 
 
-      /* -------------------------
-         CHECK EXAMPLES
-      ------------------------- */
+      /* -------------------------------------------------------
+         VALIDATE EXAMPLES
+      -------------------------------------------------------- */
 
-      if (payload.length === 0) {
+      if (rows.length === 0) {
 
         showStatus(
           "Please enter at least one example before saving.",
@@ -1008,12 +1954,34 @@
       }
 
 
-      /* -------------------------
-         PREPARE BUTTON
-      ------------------------- */
+      /* -------------------------------------------------------
+         CONSTRUCT FINAL PAYLOAD
+      -------------------------------------------------------- */
+
+      const payload = {
+
+        category: currentCategory,
+
+        rows: rows
+
+      };
+
+
+      console.log(
+        "Payload being sent:",
+        payload
+      );
+
+
+      /* -------------------------------------------------------
+         BUTTON STATE
+      -------------------------------------------------------- */
 
       const saveButton =
-        document.getElementById("saveButton");
+        document.getElementById(
+          "saveButton"
+        );
+
 
       saveButton.disabled = true;
 
@@ -1022,68 +1990,87 @@
 
 
       showStatus(
-        "Saving data...",
+        "Sending data to the database...",
         "info"
       );
 
 
-      /* -------------------------
-         SEND TO GOOGLE SCRIPT
-      ------------------------- */
+      /* -------------------------------------------------------
+         SEND TO GOOGLE APPS SCRIPT
+      -------------------------------------------------------- */
 
       try {
 
-        await fetch(SCRIPT_URL, {
+        await fetch(
+          SCRIPT_URL,
+          {
 
-          method: "POST",
+            method: "POST",
 
-          mode: "no-cors",
+            mode: "no-cors",
 
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
+            headers: {
+              "Content-Type":
+                "text/plain;charset=utf-8"
+            },
 
-          body: JSON.stringify(payload)
+            body:
+              JSON.stringify(payload)
 
-        });
+          }
+        );
 
 
         /*
-         * no-cors responses are opaque, so the browser
-         * cannot read the actual server response.
+         * With no-cors, the browser receives an opaque
+         * response and therefore cannot inspect the
+         * server's JSON response.
          *
-         * If fetch completes without throwing an error,
-         * we treat the request as successfully sent.
+         * If fetch completes without throwing an
+         * exception, the request has been sent.
          */
 
         showStatus(
-          `✓ ${payload.length} example(s) sent successfully.`,
+          `✓ ${rows.length} example(s) saved under "${currentCategory}".`,
           "success"
         );
 
 
-        /* -------------------------
-           CLEAR ONLY EXAMPLES
-        ------------------------- */
+        /*
+         * IMPORTANT:
+         *
+         * Only Examples are cleared.
+         *
+         * Parent/Sutra fields remain untouched.
+         */
 
         clearExamples();
 
 
-      } catch (error) {
+      }
 
-        console.error("Save Error:", error);
+      catch (error) {
+
+        console.error(
+          "Save Error:",
+          error
+        );
+
 
         showStatus(
-          "Unable to send the data. Please check your Google Apps Script URL and connection.",
+          "Unable to send the data. Please check your Google Apps Script URL and internet connection.",
           "error"
         );
 
-      } finally {
+      }
+
+      finally {
 
         saveButton.disabled = false;
 
         saveButton.textContent =
           "💾 Save Data";
+
       }
 
     }
@@ -1096,9 +2083,21 @@
     function clearExamples() {
 
       const container =
-        document.getElementById("examplesContainer");
+        document.getElementById(
+          "examplesContainer"
+        );
+
+
+      /*
+       * Remove every existing example.
+       */
 
       container.innerHTML = "";
+
+
+      /*
+       * Create a fresh blank Example 1.
+       */
 
       createDefaultExample();
 
@@ -1106,230 +2105,108 @@
 
 
     /* =========================================================
-       LOAD DATA
+       FOCUS ACTIVE RULE ID
     ========================================================== */
 
-    async function loadData() {
+    function focusActiveRuleId() {
 
-      const tableContainer =
-        document.getElementById("tableContainer");
-
-      tableContainer.innerHTML = `
-        <div class="loading">
-          ⏳ Loading database...
-        </div>
-      `;
+      let element = null;
 
 
-      try {
+      if (
+        currentCategory ===
+        "Samasa Vidhayaka"
+      ) {
 
-        const response =
-          await fetch(SCRIPT_URL);
-
-
-        if (!response.ok) {
-          throw new Error(
-            `HTTP Error: ${response.status}`
+        element =
+          document.getElementById(
+            "vidhayakaRuleId"
           );
-        }
 
-
-        const data =
-          await response.json();
-
-
-        buildTable(data);
-
-
-      } catch (error) {
-
-        console.error("Load Error:", error);
-
-        tableContainer.innerHTML = `
-          <div class="empty-data">
-            ❌ Unable to load data.<br>
-            Please check the Google Apps Script URL
-            and deployment settings.
-          </div>
-        `;
       }
-    }
 
+      else if (
+        currentCategory ===
+        "Samasanta Pratyaya"
+      ) {
 
-    /* =========================================================
-       BUILD DATA TABLE
-    ========================================================== */
+        element =
+          document.getElementById(
+            "samasantaRuleId"
+          );
 
-    function buildTable(data) {
+      }
 
-      const tableContainer =
-        document.getElementById("tableContainer");
+      else if (
+        currentCategory ===
+        "Aluk Samasa"
+      ) {
 
+        element =
+          document.getElementById(
+            "alukRuleId"
+          );
 
-      if (!Array.isArray(data) || data.length === 0) {
-
-        tableContainer.innerHTML = `
-          <div class="empty-data">
-            No data found in the database.
-          </div>
-        `;
-
-        return;
       }
 
 
-      /*
-       * Expected column names.
-       */
-
-      const headers = [
-
-        "Rule ID",
-        "Sutra",
-        "Samasa Type",
-        "Sanskrit Description",
-        "English Description",
-        "Samastapada",
-        "Purvapada",
-        "Uttarapada",
-        "Pratipadika",
-        "Vishesha / Condition"
-
-      ];
-
-
-      /*
-       * Skip the first row if it appears to be
-       * a header row.
-       */
-
-      let rows = data;
-
-      if (isHeaderRow(data[0])) {
-        rows = data.slice(1);
+      if (element) {
+        element.focus();
       }
-
-
-      if (rows.length === 0) {
-
-        tableContainer.innerHTML = `
-          <div class="empty-data">
-            The database contains headers but no records.
-          </div>
-        `;
-
-        return;
-      }
-
-
-      /* -------------------------
-         CREATE TABLE
-      ------------------------- */
-
-      const table =
-        document.createElement("table");
-
-
-      /* Table Header */
-
-      const thead =
-        document.createElement("thead");
-
-      const headerRow =
-        document.createElement("tr");
-
-
-      headers.forEach(header => {
-
-        const th =
-          document.createElement("th");
-
-        th.textContent = header;
-
-        headerRow.appendChild(th);
-
-      });
-
-
-      thead.appendChild(headerRow);
-      table.appendChild(thead);
-
-
-      /* Table Body */
-
-      const tbody =
-        document.createElement("tbody");
-
-
-      rows.forEach(row => {
-
-        const tr =
-          document.createElement("tr");
-
-
-        for (let i = 0; i < headers.length; i++) {
-
-          const td =
-            document.createElement("td");
-
-          /*
-           * textContent is used rather than innerHTML
-           * to safely display database content.
-           */
-
-          td.textContent =
-            row[i] !== undefined && row[i] !== null
-              ? row[i]
-              : "";
-
-          tr.appendChild(td);
-
-        }
-
-
-        tbody.appendChild(tr);
-
-      });
-
-
-      table.appendChild(tbody);
-
-      tableContainer.innerHTML = "";
-
-      tableContainer.appendChild(table);
 
     }
 
 
     /* =========================================================
-       DETECT HEADER ROW
+       FOCUS ACTIVE SUTRA
     ========================================================== */
 
-    function isHeaderRow(row) {
+    function focusActiveSutra() {
 
-      if (!Array.isArray(row)) {
-        return false;
+      let element = null;
+
+
+      if (
+        currentCategory ===
+        "Samasa Vidhayaka"
+      ) {
+
+        element =
+          document.getElementById(
+            "vidhayakaSutra"
+          );
+
+      }
+
+      else if (
+        currentCategory ===
+        "Samasanta Pratyaya"
+      ) {
+
+        element =
+          document.getElementById(
+            "samasantaSutra"
+          );
+
+      }
+
+      else if (
+        currentCategory ===
+        "Aluk Samasa"
+      ) {
+
+        element =
+          document.getElementById(
+            "alukSutra"
+          );
+
       }
 
 
-      const firstCell =
-        String(row[0] || "")
-          .trim()
-          .toLowerCase();
+      if (element) {
+        element.focus();
+      }
 
-
-      const secondCell =
-        String(row[1] || "")
-          .trim()
-          .toLowerCase();
-
-
-      return (
-        firstCell === "rule id" ||
-        firstCell === "rule_id" ||
-        firstCell === "ruleid" ||
-        secondCell === "sutra"
-      );
     }
 
 
@@ -1337,30 +2214,88 @@
        STATUS MESSAGE
     ========================================================== */
 
-    function showStatus(message, type) {
+    function showStatus(
+      message,
+      type
+    ) {
 
       const status =
-        document.getElementById("statusMessage");
+        document.getElementById(
+          "statusMessage"
+        );
 
-      status.textContent = message;
+
+      status.textContent =
+        message;
+
 
       status.className =
-        `status-message ${type}`;
+        `status ${type} show`;
+
+
+      /*
+       * Automatically remove informational
+       * messages after a few seconds.
+       */
+
+      if (type === "info") {
+
+        setTimeout(() => {
+
+          clearStatus();
+
+        }, 5000);
+
+      }
 
     }
 
+
+    /* =========================================================
+       CLEAR STATUS
+    ========================================================== */
 
     function clearStatus() {
 
       const status =
-        document.getElementById("statusMessage");
+        document.getElementById(
+          "statusMessage"
+        );
+
 
       status.textContent = "";
 
       status.className =
-        "status-message";
+        "status";
 
     }
+
+
+    /* =========================================================
+       INITIALISE
+    ========================================================== */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        /*
+         * Category 1 is selected by default.
+         */
+
+        currentCategory =
+          "Samasa Vidhayaka";
+
+
+        /*
+         * Make sure the correct parent
+         * form is visible.
+         */
+
+        changeCategory();
+
+      }
+    );
 
   </script>
 
