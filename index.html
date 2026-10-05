@@ -1463,8 +1463,7 @@
        Replace this with your deployed Web App URL.
     ========================================================== */
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm-_jBZOPdlAAPZGOPRyV_2cmk3kz7EJdrZqVYhu8znVKFXiS7pSnXxeO3hz6wW4io/exec";
-
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm-_jBZOPdlAAPZGOPRyV_2cmk3kz7EJdrZqVYhu8znVKFXiS7pSnXxeO3hz6wW4io/exec
 
     /* =========================================================
        CURRENT CATEGORY
@@ -2833,12 +2832,18 @@
       try {
         /*
          * Category is sent to Google Apps Script as a query
-         * parameter exactly as requested.
+         * parameter. redirect: "follow" is required because
+         * Google Apps Script Web Apps commonly return a 302
+         * redirect before serving the final GET response.
          */
         const response = await fetch(
           SCRIPT_URL +
             "?category=" +
-            encodeURIComponent(categoryName)
+            encodeURIComponent(categoryName),
+          {
+            method: "GET",
+            redirect: "follow"
+          }
         );
 
         if (!response.ok) {
@@ -2865,9 +2870,16 @@
 
         container.innerHTML = `
           <div class="view-error">
-            Unable to load data for "${escapeHtml(categoryName)}".
-            Please check the Google Apps Script Web App and its
-            GET/category handling.
+            <strong>Unable to load data for "${escapeHtml(categoryName)}".</strong>
+            <br><br>
+            Please check the following in your Google Apps Script:
+            <ul style="text-align:left; max-width:700px; margin:10px auto;">
+              <li>Make sure your <strong>doGet(e)</strong> function is actually returning data.</li>
+              <li>Make sure the Web App is deployed as a <strong>New version</strong> after your latest changes.</li>
+              <li>Make sure <strong>Who has access</strong> is set to <strong>Anyone</strong>.</li>
+              <li>Make sure <strong>doGet(e)</strong> correctly reads the <strong>category</strong> query parameter.</li>
+            </ul>
+            <small>Technical error: ${escapeHtml(error.message || String(error))}</small>
           </div>
         `;
       }
