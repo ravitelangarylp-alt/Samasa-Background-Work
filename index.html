@@ -483,6 +483,193 @@
       }
 
     }
+
+    /* =========================================================
+       VIEW DATA TAB
+    ========================================================= */
+    .main-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 22px;
+      border-bottom: 2px solid #F0E7DD;
+      padding-bottom: 8px;
+    }
+
+    .main-tab {
+      border: 1px solid var(--border);
+      border-radius: 8px 8px 0 0;
+      background: var(--soft-bg);
+      color: var(--text);
+      padding: 11px 20px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .main-tab:hover {
+      border-color: var(--accent);
+      background: #FFF7ED;
+    }
+
+    .main-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .view-data-section {
+      display: none;
+    }
+
+    .view-data-section.active {
+      display: block;
+    }
+
+    .view-category-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .view-category-tab {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--soft-bg);
+      color: var(--text);
+      min-height: 48px;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .view-category-tab:hover {
+      border-color: var(--accent);
+      background: #FFF7ED;
+    }
+
+    .view-category-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 3px 8px rgba(124, 45, 18, 0.18);
+    }
+
+    .view-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .view-category-title {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .view-refresh-btn {
+      border: 1px solid #F2C38B;
+      border-radius: 7px;
+      background: #FFF7ED;
+      color: var(--accent);
+      padding: 9px 15px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .view-refresh-btn:hover {
+      background: #FFEDD5;
+    }
+
+    .view-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+    }
+
+    .view-table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+    }
+
+    .view-table th,
+    .view-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #E7DED4;
+      border-right: 1px solid #EEE7DF;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.86rem;
+    }
+
+    .view-table th:last-child,
+    .view-table td:last-child {
+      border-right: none;
+    }
+
+    .view-table th {
+      background: #FFF7ED;
+      color: var(--primary);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .view-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .view-table tbody tr:hover {
+      background: #FCF9F5;
+    }
+
+    .view-empty,
+    .view-loading,
+    .view-error {
+      padding: 24px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--soft-bg);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .view-error {
+      color: var(--danger);
+      background: #FEE2E2;
+      border-color: #FECACA;
+    }
+
+    @media (max-width: 750px) {
+      .main-tabs {
+        flex-direction: column;
+      }
+
+      .main-tab {
+        width: 100%;
+        border-radius: 8px;
+      }
+
+      .view-category-tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .view-table {
+        min-width: 600px;
+      }
+    }
+
   </style>
 </head>
 
@@ -505,6 +692,33 @@
 
     </header>
 
+    <!-- =======================================================
+         MAIN TABS
+    ======================================================== -->
+
+    <div class="main-tabs" role="tablist" aria-label="Main sections">
+      <button
+        type="button"
+        id="dataEntryTab"
+        class="main-tab active"
+        role="tab"
+        aria-selected="true"
+        onclick="showMainTab('dataEntry')">
+        Data Entry
+      </button>
+
+      <button
+        type="button"
+        id="viewDataTab"
+        class="main-tab"
+        role="tab"
+        aria-selected="false"
+        onclick="showMainTab('viewData')">
+        View Data
+      </button>
+    </div>
+
+    <div id="dataEntryView">
 
     <!-- =======================================================
          CATEGORY SELECTION
@@ -1176,7 +1390,63 @@
 
       </button>
 
-    </div>
+    </div> <!-- /dataEntryView -->
+
+    <!-- =======================================================
+         VIEW DATA
+    ======================================================== -->
+
+    <section id="viewDataView" class="view-data-section" aria-labelledby="viewDataHeading">
+      <div class="card">
+
+        <div class="card-header">
+          <h2 id="viewDataHeading" class="card-title">📊 View Data</h2>
+          <span id="viewDataCount" class="category-badge">Loading...</span>
+        </div>
+
+        <div class="view-category-tabs" role="tablist" aria-label="View data categories">
+          <button
+            type="button"
+            id="viewCategoryVidhayaka"
+            class="view-category-tab active"
+            role="tab"
+            aria-selected="true"
+            onclick="loadData('Samasa Vidhayaka')">
+            Samasa Vidhayaka
+          </button>
+
+          <button
+            type="button"
+            id="viewCategorySamasanta"
+            class="view-category-tab"
+            role="tab"
+            aria-selected="false"
+            onclick="loadData('Samasanta Pratyaya')">
+            Samasanta Pratyaya
+          </button>
+
+          <button
+            type="button"
+            id="viewCategoryAluk"
+            class="view-category-tab"
+            role="tab"
+            aria-selected="false"
+            onclick="loadData('Aluk Samasa')">
+            Aluk Samasa
+          </button>
+        </div>
+
+        <div class="view-toolbar">
+          <h3 id="viewCategoryTitle" class="view-category-title">Samasa Vidhayaka</h3>
+          <button type="button" class="view-refresh-btn" onclick="loadData(currentViewCategory)">↻ Refresh</button>
+        </div>
+
+        <div id="viewDataContainer">
+          <div class="view-empty">Select a category to view data.</div>
+        </div>
+
+      </div>
+    </section>
 
   </div>
 
@@ -2270,6 +2540,338 @@
 
     }
 
+
+
+    /* =========================================================
+       MAIN TAB SWITCHING
+    ========================================================== */
+
+    function showMainTab(tabName) {
+      const dataEntryView = document.getElementById("dataEntryView");
+      const viewDataView = document.getElementById("viewDataView");
+      const dataEntryTab = document.getElementById("dataEntryTab");
+      const viewDataTab = document.getElementById("viewDataTab");
+
+      const isViewData = tabName === "viewData";
+
+      dataEntryView.style.display = isViewData ? "none" : "block";
+      viewDataView.classList.toggle("active", isViewData);
+
+      dataEntryTab.classList.toggle("active", !isViewData);
+      viewDataTab.classList.toggle("active", isViewData);
+
+      dataEntryTab.setAttribute("aria-selected", String(!isViewData));
+      viewDataTab.setAttribute("aria-selected", String(isViewData));
+
+      if (isViewData) {
+        loadData(currentViewCategory);
+      }
+    }
+
+
+    /* =========================================================
+       VIEW DATA
+    ========================================================== */
+
+    let currentViewCategory = "Samasa Vidhayaka";
+
+    function setActiveViewCategory(categoryName) {
+      currentViewCategory = categoryName;
+
+      const buttonMap = {
+        "Samasa Vidhayaka": "viewCategoryVidhayaka",
+        "Samasanta Pratyaya": "viewCategorySamasanta",
+        "Aluk Samasa": "viewCategoryAluk"
+      };
+
+      Object.values(buttonMap).forEach(id => {
+        const button = document.getElementById(id);
+        if (button) {
+          button.classList.remove("active");
+          button.setAttribute("aria-selected", "false");
+        }
+      });
+
+      const activeButton = document.getElementById(buttonMap[categoryName]);
+      if (activeButton) {
+        activeButton.classList.add("active");
+        activeButton.setAttribute("aria-selected", "true");
+      }
+
+      const title = document.getElementById("viewCategoryTitle");
+      if (title) {
+        title.textContent = categoryName;
+      }
+    }
+
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function formatHeader(header) {
+      return String(header ?? "")
+        .replace(/_/g, " ")
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .trim();
+    }
+
+
+    /*
+     * Converts the most common Google Apps Script JSON response
+     * formats into { headers: [], rows: [] }.
+     *
+     * Supported:
+     *   - [{...}, {...}]
+     *   - {data: [{...}]}
+     *   - {rows: [{...}]}
+     *   - {data: [[...], [...]], headers: [...]}
+     *   - {rows: [[...], [...]], headers: [...]}
+     *   - [[...], [...]]
+     */
+    function normaliseViewData(response) {
+      let source = response;
+
+      if (source && !Array.isArray(source) && typeof source === "object") {
+        if (Array.isArray(source.data)) {
+          source = source.data;
+        } else if (Array.isArray(source.rows)) {
+          source = source.rows;
+        } else if (Array.isArray(source.values)) {
+          source = source.values;
+        } else if (Array.isArray(source.result)) {
+          source = source.result;
+        }
+      }
+
+      let suppliedHeaders = [];
+
+      if (response && !Array.isArray(response) && typeof response === "object") {
+        if (Array.isArray(response.headers)) {
+          suppliedHeaders = response.headers;
+        } else if (Array.isArray(response.columns)) {
+          suppliedHeaders = response.columns;
+        }
+      }
+
+      if (!Array.isArray(source)) {
+        return { headers: [], rows: [] };
+      }
+
+      if (source.length === 0) {
+        return { headers: suppliedHeaders, rows: [] };
+      }
+
+      /*
+       * Array of objects: dynamically collect all keys.
+       * This allows the table to match the category returned
+       * by the Google Apps Script.
+       */
+      if (
+        source.every(
+          item =>
+            item !== null &&
+            typeof item === "object" &&
+            !Array.isArray(item)
+        )
+      ) {
+        const headers = suppliedHeaders.length
+          ? suppliedHeaders
+          : Array.from(
+              new Set(
+                source.flatMap(item => Object.keys(item))
+              )
+            );
+
+        const rows = source.map(item =>
+          headers.map(header => item[header] ?? "")
+        );
+
+        return { headers, rows };
+      }
+
+      /*
+       * Array of arrays: use supplied headers if available.
+       * If the first row looks like a header row and no headers
+       * were supplied, treat it as the header row.
+       */
+      if (Array.isArray(source[0])) {
+        let headers = suppliedHeaders.slice();
+        let rows = source.slice();
+
+        if (!headers.length) {
+          const firstRow = source[0].map(value => String(value ?? ""));
+          const looksLikeHeader =
+            firstRow.length > 0 &&
+            firstRow.every(value => value.trim() !== "");
+
+          if (looksLikeHeader) {
+            headers = firstRow;
+            rows = source.slice(1);
+          } else {
+            const maxColumns = source.reduce(
+              (max, row) => Math.max(max, row.length),
+              0
+            );
+
+            headers = Array.from(
+              { length: maxColumns },
+              (_, index) => `Column ${index + 1}`
+            );
+          }
+        }
+
+        const columnCount = Math.max(
+          headers.length,
+          ...rows.map(row => row.length)
+        );
+
+        while (headers.length < columnCount) {
+          headers.push(`Column ${headers.length + 1}`);
+        }
+
+        rows = rows.map(row => {
+          const copy = row.slice();
+          while (copy.length < headers.length) {
+            copy.push("");
+          }
+          return copy.slice(0, headers.length);
+        });
+
+        return { headers, rows };
+      }
+
+      return { headers: [], rows: [] };
+    }
+
+
+    function renderViewTable(response) {
+      const container = document.getElementById("viewDataContainer");
+      const countBadge = document.getElementById("viewDataCount");
+
+      const normalised = normaliseViewData(response);
+      const headers = normalised.headers;
+      const rows = normalised.rows;
+
+      if (!headers.length) {
+        countBadge.textContent = "0 records";
+        container.innerHTML =
+          '<div class="view-empty">No data found for this category.</div>';
+        return;
+      }
+
+      if (!rows.length) {
+        countBadge.textContent = "0 records";
+        container.innerHTML =
+          '<div class="view-empty">No data found for this category.</div>';
+        return;
+      }
+
+      countBadge.textContent =
+        `${rows.length} record${rows.length === 1 ? "" : "s"}`;
+
+      const thead = `
+        <thead>
+          <tr>
+            ${headers
+              .map(header => `<th>${escapeHtml(formatHeader(header))}</th>`)
+              .join("")}
+          </tr>
+        </thead>
+      `;
+
+      const tbody = `
+        <tbody>
+          ${rows
+            .map(
+              row => `
+                <tr>
+                  ${headers
+                    .map(
+                      (_, index) =>
+                        `<td>${escapeHtml(row[index])}</td>`
+                    )
+                    .join("")}
+                </tr>
+              `
+            )
+            .join("")}
+        </tbody>
+      `;
+
+      container.innerHTML = `
+        <div class="view-table-wrap">
+          <table class="view-table">
+            ${thead}
+            ${tbody}
+          </table>
+        </div>
+      `;
+    }
+
+
+    async function loadData(categoryName) {
+      setActiveViewCategory(categoryName);
+
+      const container =
+        document.getElementById("viewDataContainer");
+
+      const countBadge =
+        document.getElementById("viewDataCount");
+
+      container.innerHTML =
+        '<div class="view-loading">Loading data...</div>';
+
+      countBadge.textContent = "Loading...";
+
+      try {
+        /*
+         * Category is sent to Google Apps Script as a query
+         * parameter exactly as requested.
+         */
+        const response = await fetch(
+          SCRIPT_URL +
+            "?category=" +
+            encodeURIComponent(categoryName)
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `HTTP error ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        console.log(
+          `View Data response for "${categoryName}":`,
+          data
+        );
+
+        renderViewTable(data);
+      } catch (error) {
+        console.error(
+          `View Data Error (${categoryName}):`,
+          error
+        );
+
+        countBadge.textContent = "Error";
+
+        container.innerHTML = `
+          <div class="view-error">
+            Unable to load data for "${escapeHtml(categoryName)}".
+            Please check the Google Apps Script Web App and its
+            GET/category handling.
+          </div>
+        `;
+      }
+    }
 
     /* =========================================================
        INITIALISE
